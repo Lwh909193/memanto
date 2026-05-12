@@ -1,0 +1,111 @@
+# LangGraph + Memanto Example
+
+This directory contains a real-world example of **LangGraph** agents using **Memanto** as their shared, persistent memory layer. Two agents collaborate through a semantic memory database that survives across sessions, agent runs, and checkpoints.
+
+> **Note**: The core integration tools used in this example are published to PyPI as `memanto`. For deep documentation on the architecture, setup instructions, and API details, please read the [memanto package documentation](https://github.com/moorcheh-ai/memanto).
+
+## Architecture
+
+![LangGraph + Memanto: Persistent Multi-Agent Memory](https://github.com/moorcheh-ai/memanto/raw/main/assets/langgraph-architecture.png)
+
+## What This Demonstrates
+
+- **Cross-agent memory sharing**: A Research Agent stores findings that a Writer Agent retrieves
+- **Cross-session persistence**: Run the researcher today, the writer tomorrow — memories persist
+- **Typed semantic memory**: 13 memory types (fact, observation, decision, etc.) with confidence scoring
+- **Stateful pipelines**: LangGraph checkpoints preserve conversation state across turns
+- **Contradictory memory handling**: Detect and resolve conflicting facts (bonus)
+
+## Prerequisites
+
+- Python 3.10+
+- A [Moorcheh API key](https://console.moorcheh.ai/api-keys) (free tier: 100K ops/month)
+- An [OpenRouter API key](https://openrouter.ai/keys) (for the LLM — free tier available)
+
+## Setup
+
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env and add your MOORCHEH_API_KEY and OPENROUTER_API_KEY
+```
+
+## Step-by-Step Demo (Proves Persistence)
+
+```bash
+# Step 1: Research Agent stores findings in Memanto
+python run_research.py
+
+# Step 2: Writer Agent retrieves those memories in a NEW session
+python run_writer.py
+
+# Step 3 (Bonus): Demonstrate contradictory memory handling
+python run_contradiction.py
+```
+
+## File Structure
+
+```
+examples/langgraph-memory/
+├── README.md                  # This file
+├── requirements.txt           # Python dependencies
+├── .env.example               # API key template
+├── langgraph_memanto/
+│   ├── __init__.py
+│   ├── state.py               # Shared LangGraph state schema
+│   ├── nodes.py               # Agent node definitions
+│   ├── memory_tools.py        # LangGraph-native Memanto tools
+│   └── graph.py               # Graph definition + compilation
+├── run_research.py             # Run 1: Research Agent stores findings
+├── run_writer.py               # Run 2: Writer Agent recalls memories
+├── run_full_pipeline.py        # Full pipeline in one run
+└── run_contradiction.py       # Bonus: contradictory memory handling
+```
+
+## How It Works
+
+### State Schema
+
+The shared `ResearchState` holds both the conversation trace and the Memanto agent ID:
+
+```python
+class ResearchState(TypedDict):
+    messages: List[BaseMessage]
+    memanto_agent_id: str
+    research_topic: str
+    findings: List[str]
+```
+
+### Memory Tools
+
+`memory_tools.py` wraps the Memanto SDK as pure functions (no class inheritance),
+compatible with LangGraph's function-based node model:
+
+- `memanto_remember(state, memory_type, title, content, tags)` → stores a memory
+- `memanto_recall(state, query, limit)` → searches memories
+- `memanto_answer(state, question)` → RAG over stored memories
+
+### Graph Structure
+
+```
+research_graph:
+  topic → [research_agent] → remember_findings → writer_agent → recall_findings → done
+                         ↑                      ↓
+                         └────── memories ──────┘
+```
+
+The graph uses a **Memanto agent ID** (`langgraph-research-team`) as the shared
+memory namespace, giving both the researcher and writer access to the same memories.
+
+## Bonus: Cursor Integration
+
+After running the LangGraph pipeline, you can access the same memories from Cursor:
+
+```bash
+memanto connect cursor --global
+```
+
+Open any project in Cursor and ask it to recall research findings — it accesses
+the same Memanto memory namespace used by the LangGraph agents.
