@@ -902,7 +902,7 @@ class DirectClient:
         threshold: float | None = None,
         temperature: float | None = None,
         ai_model: str | None = None,
-        kiosk_mode: bool = False,
+        kiosk_mode: bool | None = None,
         header_prompt: str | None = None,
         footer_prompt: str | None = None,
     ) -> dict[str, Any]:
@@ -916,10 +916,13 @@ class DirectClient:
             agent_id: Target agent.
             question: Natural-language question.
             limit: Number of memories to use as context (defaults to config).
-            threshold: Confidence threshold for memory relevance (defaults to config).
+            threshold: Similarity threshold. Only honored when
+                ``kiosk_mode`` is True. Defaults to the config value when
+                unset.
             temperature: Temperature for the LLM response (defaults to config).
             ai_model: AI model to use for generating the answer (defaults to config).
-            kiosk_mode: When true, filters out low-relevance results; requires threshold.
+            kiosk_mode: When True, filters out low-relevance results using
+                ``threshold``. When None (default), reads the config value.
             header_prompt: Header prompt for the LLM.
             footer_prompt: Footer prompt for the LLM.
 
@@ -930,12 +933,16 @@ class DirectClient:
         ans_cfg = ConfigManager().get_answer_config()
         if limit is None:
             limit = ans_cfg["answer_limit"]
-        if threshold is None:
-            threshold = ans_cfg["threshold"]
         if temperature is None:
             temperature = ans_cfg["temperature"]
         if ai_model is None:
             ai_model = ans_cfg["model"]
+        if kiosk_mode is None:
+            kiosk_mode = bool(ans_cfg.get("kiosk_mode", False))
+        # Threshold is only meaningful in kiosk_mode; only fall back to the
+        # config value when the caller has actually turned kiosk_mode on.
+        if kiosk_mode and threshold is None:
+            threshold = ans_cfg["threshold"]
 
         # Ensure there is a valid, non-expired session for this agent
         session = self._get_validated_session_for_agent(agent_id)

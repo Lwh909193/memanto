@@ -452,9 +452,6 @@ async def answer(
     # Resolve defaults from settings
     limit = request.limit if request.limit is not None else settings.ANSWER_LIMIT
     CostGuard.validate_k_limit(limit)
-    threshold = None
-    if request.kiosk_mode:
-        threshold = request.threshold if request.threshold is not None else 0.10
     temperature = (
         request.temperature
         if request.temperature is not None
@@ -481,7 +478,9 @@ async def answer(
             "If no relevant memories exist, acknowledge that."
         )
 
-        # Use Moorcheh's answer.generate endpoint.
+        # Use Moorcheh's answer.generate endpoint. The REST API does not
+        # apply a server-side default for threshold — it is only forwarded
+        # when the caller explicitly passes one and kiosk_mode is on.
         generate_kwargs = {
             "namespace": namespace,
             "query": request.question,
@@ -492,8 +491,8 @@ async def answer(
             "header_prompt": header_prompt,
             "footer_prompt": footer_prompt,
         }
-        if request.kiosk_mode:
-            generate_kwargs["threshold"] = threshold
+        if request.kiosk_mode and request.threshold is not None:
+            generate_kwargs["threshold"] = request.threshold
 
         response = await asyncio.to_thread(client.answer.generate, **generate_kwargs)
 

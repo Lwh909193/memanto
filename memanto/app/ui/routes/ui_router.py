@@ -113,6 +113,7 @@ async def update_ui_config(updates: dict):
             temperature=float(ans["temperature"]) if "temperature" in ans else None,
             answer_limit=int(ans["answer_limit"]) if "answer_limit" in ans else None,
             threshold=float(ans["threshold"]) if "threshold" in ans else None,
+            kiosk_mode=bool(ans["kiosk_mode"]) if "kiosk_mode" in ans else None,
         )
 
     if "recall" in updates and isinstance(updates["recall"], dict):

@@ -152,6 +152,7 @@ class ConfigManager:
             "temperature": 0.7,
             "answer_limit": 15,
             "threshold": 0.01,
+            "kiosk_mode": False,
         }
         defaults.update(answer)
         return defaults
@@ -162,6 +163,7 @@ class ConfigManager:
         temperature: float | None = None,
         answer_limit: int | None = None,
         threshold: float | None = None,
+        kiosk_mode: bool | None = None,
     ) -> None:
         """Set Answer config values."""
         data = self.load_yaml()
@@ -174,6 +176,8 @@ class ConfigManager:
             answer["answer_limit"] = answer_limit
         if threshold is not None:
             answer["threshold"] = threshold
+        if kiosk_mode is not None:
+            answer["kiosk_mode"] = bool(kiosk_mode)
 
         self.save_yaml(data)
 
