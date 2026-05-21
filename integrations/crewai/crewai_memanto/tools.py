@@ -14,9 +14,8 @@ from typing import Any
 from crewai.tools import BaseTool
 from pydantic import BaseModel, Field
 
-from memanto.cli.client.sdk_client import SdkClient
-
 from memanto.app.utils.errors import AgentAlreadyExistsError
+from memanto.cli.client.sdk_client import SdkClient
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +92,7 @@ class RememberInput(BaseModel):
 
     memory_type: str = Field(
         ...,
+        pattern=r"^(fact|preference|goal|decision|artifact|learning|event|instruction|relationship|context|observation|commitment|error)$",
         description=(
             f"The semantic type of memory to store. Must be exactly one of the types "
             f"(without the description): fact, preference, goal, decision, artifact, "
@@ -110,6 +110,8 @@ class RememberInput(BaseModel):
     )
     confidence: float = Field(
         ...,
+        ge=0.0,
+        le=1.0,
         description="Confidence score from 0.0 to 1.0. The agent must evaluate the certainty of the memory. Use 1.0 for verified explicit facts, 0.7-0.85 for observations/estimates, and lower for unverified information.",
     )
     tags: str = Field(
