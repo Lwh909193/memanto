@@ -41,8 +41,10 @@ flowchart TB
         DB[("🗄️ Typed semantic memory<br/>13 kinds · confidence · tags<br/>conflict detection")]:::db
     end
 
+    R1 -. "asearch (no prior memories)" .-> STORE
     E1 == "aput(('bob','memories'), ...)" ==> STORE
     STORE == "asearch → context injected" ==> R2
+    E2 == "aput(new memories)" ==> STORE
     STORE <==> DB
 
     classDef user fill:#1e40af,stroke:#3b82f6,color:#dbeafe,stroke-width:2px
