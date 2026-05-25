@@ -6,55 +6,7 @@ A runnable customer-support agent that uses **[Memanto](https://memanto.ai)** as
 
 ## Architecture
 
-```mermaid
-%%{init: {'theme':'base', 'themeVariables': {
-  'primaryColor':'#1e293b',
-  'primaryTextColor':'#f8fafc',
-  'primaryBorderColor':'#475569',
-  'lineColor':'#94a3b8',
-  'fontSize':'14px'
-}}}%%
-flowchart TB
-    subgraph S1["Session 1 · thread_id = conv-1"]
-        direction LR
-        U1(["👤 Bob<br/>'I'm allergic to peanuts.<br/>Reach me by email only.'"]):::user
-        U1 --> R1["🔍 recall_context"]:::recall
-        R1 --> A1["🤖 respond"]:::respond
-        A1 --> E1["📝 extract_and_store"]:::store
-    end
-
-    subgraph S2["Session 2 · thread_id = conv-2 · FRESH thread"]
-        direction LR
-        U2(["👤 Bob<br/>'What snacks should<br/>I pack for a road trip?'"]):::user
-        U2 --> R2["🔍 recall_context"]:::recall
-        R2 --> A2["🤖 respond<br/><i>skips peanuts ✓</i>"]:::respond
-        A2 --> E2["📝 extract_and_store"]:::store
-    end
-
-    subgraph INFRA["LangGraph runtime"]
-        direction LR
-        STORE[("💎 MemantoStore<br/><b>BaseStore</b><br/><i>long-term · cross-thread</i>")]:::store2
-        CKPT[("🧠 InMemorySaver<br/><i>short-term · per thread_id</i>")]:::ckpt
-    end
-
-    subgraph MEM["Memanto · Moorcheh"]
-        DB[("🗄️ Typed semantic memory<br/>13 kinds · confidence · tags<br/>conflict detection")]:::db
-    end
-
-    R1 -. "asearch (no prior memories)" .-> STORE
-    E1 == "aput(('bob','memories'), ...)" ==> STORE
-    STORE == "asearch → context injected" ==> R2
-    E2 == "aput(new memories)" ==> STORE
-    STORE <==> DB
-
-    classDef user fill:#1e40af,stroke:#3b82f6,color:#dbeafe,stroke-width:2px
-    classDef recall fill:#0e7490,stroke:#22d3ee,color:#cffafe,stroke-width:2px
-    classDef respond fill:#7c3aed,stroke:#a78bfa,color:#ede9fe,stroke-width:2px
-    classDef store fill:#15803d,stroke:#4ade80,color:#dcfce7,stroke-width:2px
-    classDef store2 fill:#15803d,stroke:#4ade80,color:#dcfce7,stroke-width:3px
-    classDef ckpt fill:#475569,stroke:#94a3b8,color:#f1f5f9,stroke-width:2px
-    classDef db fill:#b45309,stroke:#fbbf24,color:#fef3c7,stroke-width:2px
-```
+![langgraph-architecture-diagram](./langgraph-architecture-diagram.png)
 
 **Two persistence layers, one graph:**
 
