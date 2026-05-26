@@ -75,7 +75,7 @@ class FakeClient:
         )
         return {"memory_id": "mem_123", "agent_id": self._agent_id, "status": "queued"}
 
-    def recall(self, query, *, limit, type=None, min_confidence=None):
+    def recall(self, query, *, limit, type=None, threshold=None):
         return self.recall_results
 
     def answer(self, question, *, limit=None):

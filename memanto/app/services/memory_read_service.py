@@ -62,11 +62,10 @@ class MemoryReadService:
         scope_id: str | None = None,
         type: list[str] | None = None,
         tags: list[str] | None = None,
-        min_confidence: float | None = None,
         status_filter: list[str] | None = None,
         limit: int = 10,
         offset: int = 0,
-        min_similarity_score: float | None = None,
+        threshold: float | None = None,
         created_after: str | None = None,
         created_before: str | None = None,
         metadata_filters: dict[str, Any] | None = None,
@@ -91,8 +90,8 @@ class MemoryReadService:
                 query=query,
                 type=type,
                 tags=tags,
-                min_confidence=min_confidence,
                 status_filter=status_filter,
+                threshold=threshold,
                 created_after=created_after,
                 created_before=created_before,
                 metadata_filters=metadata_filters,
@@ -108,8 +107,8 @@ class MemoryReadService:
                 query=enhanced_query,
                 namespaces=namespaces,
                 top_k=top_k,
-                threshold=min_similarity_score,
-                kiosk_mode=min_similarity_score is not None,
+                threshold=threshold,
+                kiosk_mode=threshold is not None,
             )
 
             search_items = search_result.get("results", [])
@@ -153,10 +152,9 @@ class MemoryReadService:
         scopes: list[dict[str, str]],
         type: list[str] | None = None,
         tags: list[str] | None = None,
-        min_confidence: float | None = None,
         status_filter: list[str] | None = None,
         limit: int = 10,
-        min_similarity_score: float | None = None,
+        threshold: float | None = None,
         metadata_filters: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """
@@ -187,8 +185,8 @@ class MemoryReadService:
                 query=query,
                 type=type,
                 tags=tags,
-                min_confidence=min_confidence,
                 status_filter=status_filter,
+                threshold=threshold,
                 metadata_filters=metadata_filters,
             )
 
@@ -200,8 +198,8 @@ class MemoryReadService:
                 query=enhanced_query,
                 namespaces=namespaces,
                 top_k=top_k,
-                threshold=min_similarity_score,
-                kiosk_mode=min_similarity_score is not None,
+                threshold=threshold,
+                kiosk_mode=threshold is not None,
             )
 
             # Format results
@@ -479,8 +477,8 @@ class MemoryReadService:
         query: str,
         type: list[str] | None = None,
         tags: list[str] | None = None,
-        min_confidence: float | None = None,
         status_filter: list[str] | None = None,
+        threshold: float | None = None,
         created_after: str | None = None,
         created_before: str | None = None,
         metadata_filters: dict[str, Any] | None = None,
@@ -511,10 +509,10 @@ class MemoryReadService:
                 filter_parts.append(f"#status:{status}")
 
         # Add confidence filter (convert to category if needed)
-        if min_confidence is not None:
-            if min_confidence >= 0.8:
+        if threshold is not None:
+            if threshold >= 0.8:
                 filter_parts.append("#confidence:high")
-            elif min_confidence >= 0.5:
+            elif threshold >= 0.5:
                 filter_parts.append("#confidence:medium")
 
         # Add custom metadata filters

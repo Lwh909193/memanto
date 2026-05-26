@@ -114,7 +114,7 @@ def _default_config() -> dict:
         "auto_create": True,
         "mirror_memory_writes": True,
         "max_recall_results": _DEFAULT_MAX_RECALL_RESULTS,
-        "min_confidence": None,
+        "threshold": None,
         "session_duration_hours": None,
     }
 
@@ -181,13 +181,13 @@ def _load_memanto_config(hermes_home: str) -> dict:
         )
     except Exception:
         config["max_recall_results"] = _DEFAULT_MAX_RECALL_RESULTS
-    if config.get("min_confidence") is not None:
+    if config.get("threshold") is not None:
         try:
-            config["min_confidence"] = max(
-                0.0, min(1.0, float(config["min_confidence"]))
+            config["threshold"] = max(
+                0.0, min(1.0, float(config["threshold"]))
             )
         except Exception:
-            config["min_confidence"] = None
+            config["threshold"] = None
     if config.get("session_duration_hours") is not None:
         try:
             config["session_duration_hours"] = max(
@@ -363,7 +363,7 @@ class _MemantoClient:
         *,
         limit: int,
         type: list[str] | None = None,
-        min_confidence: float | None = None,
+        threshold: float | None = None,
     ) -> list[dict]:
         self.ensure_session()
         result = self._client.recall(
@@ -371,7 +371,7 @@ class _MemantoClient:
             query=query,
             limit=limit,
             type=type,
-            min_confidence=min_confidence,
+            threshold=threshold,
         )
         return result.get("memories", [])
 
@@ -472,7 +472,7 @@ class MemantoMemoryProvider(MemoryProvider):
         self._auto_capture = True
         self._mirror_memory_writes = True
         self._max_recall_results = _DEFAULT_MAX_RECALL_RESULTS
-        self._min_confidence: float | None = None
+        self._threshold: float | None = None
         self._write_enabled = True
         self._active = False
         self._warmup_thread: threading.Thread | None = None
@@ -540,7 +540,7 @@ class MemantoMemoryProvider(MemoryProvider):
         self._auto_capture = self._config["auto_capture"]
         self._mirror_memory_writes = self._config["mirror_memory_writes"]
         self._max_recall_results = self._config["max_recall_results"]
-        self._min_confidence = self._config["min_confidence"]
+        self._threshold = self._config["threshold"]
 
         agent_context = kwargs.get("agent_context", "")
         self._write_enabled = agent_context not in {"cron", "flush", "subagent"}
@@ -600,7 +600,7 @@ class MemantoMemoryProvider(MemoryProvider):
             memories = self._client.recall(
                 query[:2000],
                 limit=self._max_recall_results,
-                min_confidence=self._min_confidence,
+                threshold=self._threshold,
             )
             return _format_recall_block(memories, self._max_recall_results)
         except Exception:
@@ -780,7 +780,7 @@ class MemantoMemoryProvider(MemoryProvider):
                 query,
                 limit=limit,
                 type=type_filter,
-                min_confidence=self._min_confidence,
+                threshold=self._threshold,
             )
             formatted = []
             for item in memories:

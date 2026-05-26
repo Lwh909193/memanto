@@ -1532,7 +1532,7 @@
             const typesRaw = document.getElementById('recTypes').value.trim();
             if (typesRaw) body.type = typesRaw.split(',').map(t => t.trim()).filter(Boolean);
             const simRaw = document.getElementById('recSim').value;
-            if (simRaw) body.min_similarity = parseFloat(simRaw);
+            if (simRaw) body.threshold = parseFloat(simRaw);
             const box = document.getElementById('recallResults');
             box.innerHTML = '<div class="loading-overlay"><span class="spinner"></span> Searching...</div>';
             try {

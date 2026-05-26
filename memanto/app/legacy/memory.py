@@ -160,13 +160,10 @@ async def search_memories(
     tags: list[str] | None = Query(
         None, description="Tag filters (leverages Moorcheh #keyword)"
     ),
-    min_confidence: float | None = Query(
-        None, ge=0.0, le=1.0, description="Minimum confidence threshold"
-    ),
     status_filter: list[str] | None = Query(
         None, description="Status filters: active, provisional, superseded"
     ),
-    min_similarity_score: float | None = Query(
+    threshold: float | None = Query(
         None,
         ge=0.0,
         le=1.0,
@@ -202,7 +199,7 @@ async def search_memories(
     - Second page: limit=10, offset=10
     - Check has_more in response to see if more results available
 
-    Set min_similarity_score to filter out low-relevance results
+    Set threshold to filter out low-relevance results
     (e.g., 0.8 for high relevance, 0.5 for medium relevance).
     """
     try:
@@ -213,9 +210,8 @@ async def search_memories(
             scope_id=scope_id,
             type=memory_types,
             tags=tags,
-            min_confidence=min_confidence,
             status_filter=status_filter,
-            min_similarity_score=min_similarity_score,
+            threshold=threshold,
             created_after=created_after,
             created_before=created_before,
             limit=limit,
@@ -256,9 +252,8 @@ async def search_multi_scope(
             scopes=scopes,
             type=list(request.memory_types) if request.memory_types else None,
             tags=request.tags,
-            min_confidence=request.min_confidence,
             status_filter=request.status_filter,
-            min_similarity_score=request.min_similarity_score,
+            threshold=request.threshold,
             limit=request.limit,
         )
 

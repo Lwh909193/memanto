@@ -732,9 +732,9 @@ class DirectClient:
         agent_id: str,
         query: str,
         limit: int | None = None,
+        threshold: float | None = None,
         type: list[str] | None = None,
         tags: list[str] | None = None,
-        min_confidence: float | None = None,
         created_after: datetime | None = None,
         created_before: datetime | None = None,
     ) -> dict[str, Any]:
@@ -745,9 +745,9 @@ class DirectClient:
             agent_id: Target agent.
             query: Natural-language search query.
             limit: Max results (1–100, defaults to config).
+            threshold: Minimum similarity score threshold (0-1).
             type: Filter by types (e.g. ``["fact", "decision"]``).
             tags: Filter by tags.
-            min_confidence: Minimum confidence threshold.
             created_after: Only memories created after this datetime.
             created_before: Only memories created before this datetime.
 
@@ -770,9 +770,9 @@ class DirectClient:
             query=query,
             scope_type="agent",
             scope_id=agent_id,
+            threshold=threshold,
             type=type,
             tags=tags,
-            min_confidence=min_confidence,
             created_after=created_after.isoformat() if created_after else None,
             created_before=created_before.isoformat() if created_before else None,
             limit=limit,

@@ -37,7 +37,7 @@ router = APIRouter()
 class RecallRequest(BaseModel):
     query: str = Field(..., min_length=1, description="Search query")
     limit: int | None = Field(default=None, ge=1, description="Max results")
-    min_similarity: float | None = Field(
+    threshold: float | None = Field(
         default=None, ge=0.0, le=1.0, description="Minimum similarity score (0-1)"
     )
     type: list[str] | None = Field(default=None, description="Memory type filters")
@@ -407,7 +407,7 @@ async def recall(
             scope_type="agent",
             scope_id=agent_id,
             type=request.type,
-            min_similarity_score=request.min_similarity,
+            threshold=request.threshold,
             limit=limit,
         )
 

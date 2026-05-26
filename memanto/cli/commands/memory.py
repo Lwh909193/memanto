@@ -248,8 +248,8 @@ def recall(
     memory_type: str | None = typer.Option(
         None, "--type", "-t", help="Filter by memory type"
     ),
-    min_confidence: float | None = typer.Option(
-        None, "--min-confidence", help="Minimum confidence score"
+    threshold: float | None = typer.Option(
+        None, "--threshold", help="Minimum similarity threshold (0.0 - 1.0)"
     ),
     tags: str | None = typer.Option(
         None, "--tags", help="Filter by tags (comma-separated)"
@@ -361,9 +361,9 @@ def recall(
                     agent_id=agent_id,
                     query=query,
                     limit=limit,
+                    threshold=threshold,
                     type=type,
                     tags=tag_list,
-                    min_confidence=min_confidence,
                 )
             else:
                 _error(

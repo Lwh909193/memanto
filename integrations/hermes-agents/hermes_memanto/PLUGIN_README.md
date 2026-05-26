@@ -40,7 +40,7 @@ Config file: `$HERMES_HOME/memanto.json`
 | `auto_create` | `true` | Create the agent on first use if it does not exist. |
 | `mirror_memory_writes` | `true` | Echo Hermes built-in `memory` writes into Memanto. |
 | `max_recall_results` | `10` | Max memories formatted into prefetch context (1–100). |
-| `min_confidence` | `null` | Drop recalled memories below this confidence (0.0–1.0). |
+| `threshold` | `null` | Drop recalled memories below this threshold (0.0–1.0). |
 | `session_duration_hours` | `null` | Override Memanto session lifetime (defaults to Memanto's config). |
 
 ### Environment Variables

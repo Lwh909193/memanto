@@ -86,7 +86,7 @@ class ReadFilters(BaseModel):
             list[Literal["active", "provisional", "superseded"]], ["active"]
         )
     )
-    min_confidence: float | None = Field(None, ge=0.0, le=1.0)
+    threshold: float | None = Field(None, ge=0.0, le=1.0)
     tags: list[str] | None = None
 
 

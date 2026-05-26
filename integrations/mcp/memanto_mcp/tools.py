@@ -461,7 +461,7 @@ def register_tools(mcp: Any, lifecycle: MemantoLifecycle) -> None:
                 ),
             ),
         ] = None,
-        min_similarity: Annotated[
+        threshold: Annotated[
             float | None,
             Field(
                 default=None,
@@ -481,8 +481,8 @@ def register_tools(mcp: Any, lifecycle: MemantoLifecycle) -> None:
                 type=list(type) if type else None,
             )
             hits = [_to_memory_hit(m) for m in result.get("memories", [])]
-            if min_similarity is not None:
-                hits = [h for h in hits if (h.score or 0.0) >= min_similarity]
+            if threshold is not None:
+                hits = [h for h in hits if (h.score or 0.0) >= threshold]
             return RecallResult(
                 status="ok",
                 agent_id=resolved,

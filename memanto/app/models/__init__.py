@@ -173,9 +173,8 @@ class MemoryMultiScopeSearchRequest(BaseModel):
     )
     memory_types: list[MemoryType] | None = None
     tags: list[str] | None = None
-    min_confidence: float | None = Field(None, ge=0.0, le=1.0)
     status_filter: list[str] | None = None
-    min_similarity_score: float | None = Field(
+    threshold: float | None = Field(
         None, ge=0.0, le=1.0, description="Minimum similarity score threshold"
     )
     limit: int = Field(default=10, ge=1, le=100)
