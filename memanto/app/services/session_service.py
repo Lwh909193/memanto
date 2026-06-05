@@ -195,7 +195,7 @@ class SessionService:
         Get currently active session
 
         Returns:
-            Session object or None if no active session
+            Session object or None if no active session or session is expired
         """
         active_link = self.sessions_dir / "active"
         if not active_link.exists():
@@ -209,7 +209,16 @@ class SessionService:
             with open(active_link) as f:
                 agent_id = f.read().strip()
 
-        return self.get_session(agent_id)
+        session = self.get_session(agent_id)
+        if not session:
+            return None
+
+        # If session is expired, clear the stale active marker and return None
+        if not session.is_active():
+            self._clear_active_session()
+            return None
+
+        return session
 
     def end_session(self, agent_id: str) -> SessionSummary:
         """

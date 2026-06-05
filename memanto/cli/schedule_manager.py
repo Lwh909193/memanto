@@ -23,9 +23,7 @@ class ScheduleManager:
         self.python_exe = sys.executable
 
     def _command(self) -> str:
-        return (
-            f'"{self.python_exe}" "{self.cli_main.absolute()}" schedule _run'
-        )
+        return f'"{self.python_exe}" "{self.cli_main.absolute()}" schedule _run'
 
     def enable(self, time_str: str = "23:55") -> dict[str, Any]:
         if self.os_type == "Windows":

@@ -930,9 +930,7 @@ class SdkClient:
             "export": export_result,
         }
 
-    def generate_conflict_report(
-        self, agent_id: str, date: str
-    ) -> dict[str, Any]:
+    def generate_conflict_report(self, agent_id: str, date: str) -> dict[str, Any]:
         """
         Generate the conflict report for an agent/date.
 
