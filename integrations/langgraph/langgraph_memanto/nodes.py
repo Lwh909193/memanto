@@ -189,12 +189,17 @@ def create_remember_node(
             return {"messages": []}
 
         content = "\n\n".join(messages_to_remember)
+        title = content if len(content) <= 50 else content[:47] + "..."
 
         try:
             # First try assuming the session is already active
             client.remember(
                 agent_id=resolved_agent_id,
+                memory_type=None,
+                title=title,
                 content=content,
+                source="langgraph-node",
+                provenance="explicit_statement",
             )
         except Exception:
             # If there's an error, try to setup and retry
@@ -202,7 +207,11 @@ def create_remember_node(
             try:
                 client.remember(
                     agent_id=resolved_agent_id,
+                    memory_type=None,
+                    title=title,
                     content=content,
+                    source="langgraph-node",
+                    provenance="explicit_statement",
                 )
             except Exception as inner_e:
                 logger.error(f"Remember failed after setup: {inner_e}")

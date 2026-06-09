@@ -37,6 +37,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import threading
 import time
 from collections.abc import Iterable
 from datetime import datetime, timezone
@@ -101,6 +102,7 @@ class MemantoStore(BaseStore):
     def __init__(self, api_key: str) -> None:
         """Initialize MemantoStore with an API key."""
         self.api_key = api_key
+        self._lock = threading.RLock()
         self._client_pool: dict[str, SdkClient] = {}
         self._agent_prefix = "langgraph_"
         # (namespace, query, limit, type, min_sim) -> (timestamp, list[SearchItem])
@@ -111,7 +113,10 @@ class MemantoStore(BaseStore):
     def _ensure_client(self, namespace: tuple[str, ...]) -> tuple[SdkClient, str]:
         ns_str = "_".join(namespace) or "default"
         agent_id = f"{self._agent_prefix}{ns_str}"
-        if agent_id not in self._client_pool:
+        with self._lock:
+            if agent_id in self._client_pool:
+                return self._client_pool[agent_id], agent_id
+
             from memanto.app.utils.errors import AgentAlreadyExistsError
 
             client = SdkClient(api_key=self.api_key)
@@ -121,7 +126,7 @@ class MemantoStore(BaseStore):
                 pass
             client.activate_agent(agent_id=agent_id)
             self._client_pool[agent_id] = client
-        return self._client_pool[agent_id], agent_id
+            return client, agent_id
 
     # ------------------------------------------------------------------ #
     # Required abstract methods                                          #
@@ -236,10 +241,14 @@ class MemantoStore(BaseStore):
         confidence = float(value.pop("confidence", 0.8))
         confidence = max(0.0, min(1.0, confidence))
 
+        raw_tags = value.pop("tags", []) or []
+        if isinstance(raw_tags, str):
+            raw_tags = [t.strip() for t in raw_tags.split(",") if t.strip()]
+        elif not isinstance(raw_tags, (list, tuple, set)):
+            raw_tags = [str(raw_tags)]
+
         user_tags = [
-            t
-            for t in (value.pop("tags", []) or [])
-            if not str(t).startswith(_RESERVED_PREFIX)
+            str(t) for t in raw_tags if not str(t).startswith(_RESERVED_PREFIX)
         ]
         all_tags = user_tags + [self._key_to_tag(op.key)]
 
@@ -257,9 +266,10 @@ class MemantoStore(BaseStore):
 
         # Invalidate cached searches for this namespace
         prefix = op.namespace
-        self._search_cache = {
-            k: v for k, v in self._search_cache.items() if k[0] != prefix
-        }
+        with self._lock:
+            self._search_cache = {
+                k: v for k, v in self._search_cache.items() if k[0] != prefix
+            }
 
     # ------------------------------------------------------------------ #
     # SEARCH                                                             #
@@ -292,11 +302,12 @@ class MemantoStore(BaseStore):
             tuple(type_filter) if type_filter else None,
             min_similarity,
         )
-        cached = self._search_cache.get(cache_key)
-        if cached is not None:
-            ts, items = cached
-            if time.time() - ts < self._CACHE_TTL_S:
-                return items
+        with self._lock:
+            cached = self._search_cache.get(cache_key)
+            if cached is not None:
+                ts, items = cached
+                if time.time() - ts < self._CACHE_TTL_S:
+                    return items
 
         fetch_limit = max(1, min(op.limit, self._MEMANTO_RECALL_CAP))
         rate_limited = False
@@ -328,10 +339,6 @@ class MemantoStore(BaseStore):
                 for m in (
                     "429",
                     "Limit Exceeded",
-                    "Forbidden",
-                    "Unauthorized",
-                    "401",
-                    "403",
                 )
             ):
                 rate_limited = True
@@ -349,16 +356,17 @@ class MemantoStore(BaseStore):
 
         out = out[: op.limit]
 
-        if not out and rate_limited and op.namespace_prefix in self._last_good:
-            logger.info(
-                "MemantoStore: rate-limited, returning last-good for %r",
-                op.namespace_prefix,
-            )
-            return self._last_good[op.namespace_prefix]
+        with self._lock:
+            if not out and rate_limited and op.namespace_prefix in self._last_good:
+                logger.info(
+                    "MemantoStore: rate-limited, returning last-good for %r",
+                    op.namespace_prefix,
+                )
+                return self._last_good[op.namespace_prefix]
 
-        if out and not rate_limited:
-            self._search_cache[cache_key] = (time.time(), out)
-            self._last_good[op.namespace_prefix] = out
+            if out and not rate_limited:
+                self._search_cache[cache_key] = (time.time(), out)
+                self._last_good[op.namespace_prefix] = out
 
         return out
 
