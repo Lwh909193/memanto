@@ -83,7 +83,7 @@ class AgentService:
             # than the cloud SDK's typed ConflictError when the namespace
             # already exists. Match on message so both backends behave the same.
             msg = str(e).lower()
-            if "already exists" in msg or "conflict" in msg or "409" in msg:
+            if ("namespace" in msg and "already exists" in msg) or "conflict" in msg:
                 print(f"[OK] Namespace already exists in Moorcheh: {namespace}")
             else:
                 raise Exception(

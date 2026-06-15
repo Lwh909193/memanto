@@ -108,9 +108,7 @@ class MemoryReadService:
             # Only enable kiosk_mode when the caller actually set a positive
             # threshold; min_similarity=0.0 means "no filter", but on-prem
             # kiosk_mode + threshold=0.0 still filters everything out.
-            use_kiosk = (
-                min_similarity_score is not None and min_similarity_score > 0
-            )
+            use_kiosk = min_similarity_score is not None and min_similarity_score > 0
             search_result = self.client.similarity_search.query(
                 query=enhanced_query,
                 namespaces=namespaces,
@@ -204,9 +202,7 @@ class MemoryReadService:
 
             # Perform cross-namespace search. Same kiosk_mode caveat as
             # search_memories: min_similarity=0.0 means "no filter".
-            use_kiosk = (
-                min_similarity_score is not None and min_similarity_score > 0
-            )
+            use_kiosk = min_similarity_score is not None and min_similarity_score > 0
             search_result = self.client.similarity_search.query(
                 query=enhanced_query,
                 namespaces=namespaces,
