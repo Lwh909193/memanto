@@ -4,7 +4,7 @@ Registers three hooks in a Claude Code ``settings.json`` (project-local by
 default, or ``~/.claude`` with ``--global``):
 
 * ``SessionStart``     -> hooks/session_start.py   (inject profile once)
-* ``UserPromptSubmit`` -> hooks/on_prompt.py       (recall + inject per skill)
+* ``UserPromptExpansion`` -> hooks/on_prompt.py       (recall + inject per skill)
 * ``Stop``             -> hooks/on_stop.py          (async distill + store)
 
 The hook command uses the *current* Python interpreter (``sys.executable``) so
@@ -50,7 +50,7 @@ def _managed_hooks() -> dict[str, list[dict[str, Any]]]:
                 ],
             }
         ],
-        "UserPromptSubmit": [
+        "UserPromptExpansion": [
             {
                 "hooks": [
                     {
@@ -161,7 +161,7 @@ def install_hooks(global_scope: bool = False) -> int:
     print(f"✓ Installed Memanto skill-memory hooks into {path}")
     if backup:
         print(f"  (backed up previous settings to {backup.name})")
-    print("  Hooks: SessionStart, UserPromptSubmit, Stop")
+    print("  Hooks: SessionStart, UserPromptExpansion, Stop")
     print("  Ensure MOORCHEH_API_KEY is set in this shell's environment.")
     return 0
 

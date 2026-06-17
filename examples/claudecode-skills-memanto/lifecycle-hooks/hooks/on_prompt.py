@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""UserPromptSubmit hook — dynamic injection before a skill runs.
+"""UserPromptExpansion hook — dynamic injection before a skill runs.
 
 Fires when the developer submits a prompt, before Claude processes it. If the
 prompt invokes a skill (``/tdd``, ``/grill-with-docs``, …), we recall the
@@ -26,13 +26,13 @@ from _common import (  # noqa: E402
     run,
 )
 
-EVENT = "UserPromptSubmit"
+EVENT = "UserPromptExpansion"
 
 
 def main() -> int:
     """Detect the invoked skill and inject its relevant memories as context.
 
-    Reads the ``UserPromptSubmit`` payload from stdin, routes by skill, and
+    Reads the ``UserPromptExpansion`` payload from stdin, routes by skill, and
     emits an ``additionalContext`` block. Bare prompts are skipped to avoid
     polluting every turn.
     """

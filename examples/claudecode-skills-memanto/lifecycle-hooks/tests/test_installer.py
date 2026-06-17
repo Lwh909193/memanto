@@ -9,7 +9,7 @@ import pytest
 
 from memanto_skills import installer
 
-_EVENTS = ("SessionStart", "UserPromptSubmit", "Stop")
+_EVENTS = ("SessionStart", "UserPromptExpansion", "Stop")
 
 
 @pytest.fixture
@@ -51,13 +51,13 @@ def test_install_preserves_existing_user_hooks(settings_path: Path) -> None:
     settings_path.parent.mkdir(parents=True)
     user_hook = {"type": "command", "command": "echo user-hook"}
     settings_path.write_text(
-        json.dumps({"hooks": {"UserPromptSubmit": [{"hooks": [user_hook]}]}}),
+        json.dumps({"hooks": {"UserPromptExpansion": [{"hooks": [user_hook]}]}}),
         encoding="utf-8",
     )
 
     installer.install_hooks()
 
-    entries = _load(settings_path)["hooks"]["UserPromptSubmit"]
+    entries = _load(settings_path)["hooks"]["UserPromptExpansion"]
     commands = [h["command"] for e in entries for h in e["hooks"]]
     assert "echo user-hook" in commands
     assert any(installer._MARKER in c for c in commands)

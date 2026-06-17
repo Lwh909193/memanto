@@ -4,7 +4,7 @@ Memanto becomes a global, active memory companion across skill executions.
 Three real Claude Code lifecycle hooks make it work without manual effort:
 
 * ``SessionStart``     -> inject the accumulated Engineering Profile once.
-* ``UserPromptSubmit`` -> recall memories relevant to the skill being invoked
+* ``UserPromptExpansion`` -> recall memories relevant to the skill being invoked
                           and inject them before Claude reads the prompt.
 * ``Stop``             -> distill the just-finished session into typed memories
                           using Memanto's backend LLM, then persist them.

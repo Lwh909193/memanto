@@ -84,7 +84,7 @@ class SkillMemory:
         self._sdk.activate_agent(agent_id, duration_hours=_SESSION_HOURS)
 
     # ------------------------------------------------------------------ #
-    # Dynamic injection (UserPromptSubmit / skill start)
+    # Dynamic injection (UserPromptExpansion / skill start)
     # ------------------------------------------------------------------ #
 
     def recall_for_skill(

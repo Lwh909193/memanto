@@ -30,7 +30,7 @@ remember to invoke, nothing to copy-paste.
 
 | Guideline | Where | What it does |
 |---|---|---|
-| **Global Memory Hook** | `install.py` → `.claude/settings.json` | Registers `SessionStart`, `UserPromptSubmit`, `Stop` against the Memanto-backed scripts in `hooks/`. One command, idempotent, backs up your settings, and preserves any hooks you already had — even inside shared entries. |
+| **Global Memory Hook** | `install.py` → `.claude/settings.json` | Registers `SessionStart`, `UserPromptExpansion`, `Stop` against the Memanto-backed scripts in `hooks/`. One command, idempotent, backs up your settings, and preserves any hooks you already had — even inside shared entries. |
 | **Active Extraction** | `hooks/on_stop.py` → `SkillMemory.distill_and_store` | Hands the session summary to **Memanto's backend LLM** (`answer()`), which distills durable decisions/rules/preferences into Memanto's typed memory categories and persists them. Guards against `stop_hook_active` re-fires so a session is never distilled twice. |
 | **Dynamic Injection** | `hooks/on_prompt.py` → `SkillMemory.recall_for_skill` | Detects the invoked skill (path-safe: `/usr/local/bin` is not a skill), recalls the memories most relevant to it, and injects them as a concise `<engineering-profile>` system-constraint block. |
 
@@ -86,7 +86,7 @@ python demo_session_3.py   # /handoff → TypeScript migration, Result<T,E>, dom
                            # then /grill-with-docs sees ALL memories from all sessions
 ```
 
-`demo_session_2.py` prints the exact context block the `UserPromptSubmit` hook
+`demo_session_2.py` prints the exact context block the `UserPromptExpansion` hook
 injects before `/tdd` runs:
 
 ```text
@@ -151,7 +151,7 @@ claudecode-skills-memanto/
 │   └── cli.py                  #   `memanto-skills`
 ├── hooks/                      # the three lifecycle hook entry points
 │   ├── session_start.py        #   SessionStart  -> profile briefing
-│   ├── on_prompt.py            #   UserPromptSubmit -> recall + inject
+│   ├── on_prompt.py            #   UserPromptExpansion -> recall + inject
 │   ├── on_stop.py              #   Stop (async) -> distill + store
 │   └── _common.py              #   exit-0 contract, skill detection, transcript reading
 ├── skills/memanto-companion/   # SKILL.md for manual inspect/recall/store

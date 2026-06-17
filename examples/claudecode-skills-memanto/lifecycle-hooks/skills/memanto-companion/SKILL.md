@@ -6,7 +6,7 @@ description: Inspect and manage the cross-session engineering memory that Memant
 # Memanto Companion
 
 Cross-session engineering memory for Claude Code skills runs automatically via
-lifecycle hooks (`SessionStart`, `UserPromptSubmit`, `Stop`). This skill is the
+lifecycle hooks (`SessionStart`, `UserPromptExpansion`, `Stop`). This skill is the
 **manual control surface** for when the user wants to inspect or steer it.
 
 All operations go through the `memanto-skills` CLI. Requires `MOORCHEH_API_KEY`

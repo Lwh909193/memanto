@@ -3,7 +3,7 @@
 
 Run this AFTER ``demo_session_1.py``, ideally in a new terminal. It is a brand
 new process with no shared in-memory state — everything it knows comes from
-Memanto. This is the exact context block the ``UserPromptSubmit`` hook would
+Memanto. This is the exact context block the ``UserPromptExpansion`` hook would
 inject before the real ``/tdd`` skill runs.
 
     python demo_session_2.py
@@ -18,7 +18,7 @@ def main() -> None:
     mem = SkillMemory()
     mem.setup()
     print("Session 2 (fresh process): /tdd is about to run on the orders service.\n")
-    print("What the UserPromptSubmit hook would inject before /tdd:\n")
+    print("What the UserPromptExpansion hook would inject before /tdd:\n")
 
     profile = mem.recall_for_skill(
         "tdd", task_hint="write tests for the Order placement flow"

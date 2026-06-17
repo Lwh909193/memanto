@@ -4,14 +4,14 @@ Design rules (these hooks run on the developer's hot path):
 
 * **Never break Claude Code.** Any internal failure exits 0 silently. A memory
   companion that crashes the editor is worse than one that misses a memory.
-* **Stay fast.** ``SessionStart`` and ``UserPromptSubmit`` gate the user, so we
+* **Stay fast.** ``SessionStart`` and ``UserPromptExpansion`` gate the user, so we
   keep them lean. Heavy LLM distillation lives in ``Stop`` (registered async).
 * **Be schema-tolerant.** The transcript line format is not officially pinned,
   so we extract text from whatever shape we find.
 
 Input fields follow the official Claude Code hooks reference: common fields are
 ``session_id``, ``transcript_path``, ``cwd``, ``permission_mode``,
-``hook_event_name``; ``UserPromptSubmit`` additionally carries ``prompt``.
+``hook_event_name``; ``UserPromptExpansion`` additionally carries ``prompt``.
 """
 
 from __future__ import annotations
