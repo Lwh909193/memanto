@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from memanto_skills.client import SOURCE_TAG, SkillMemory
-from memanto_skills.config import SkillsConfig
+from claudecode_memanto.client import SOURCE_TAG, SkillMemory
+from claudecode_memanto.config import SkillsConfig
 
 from .conftest import FakeSdkClient
 

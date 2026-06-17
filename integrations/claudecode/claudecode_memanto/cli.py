@@ -1,13 +1,13 @@
-"""``memanto-skills`` CLI — manual control over the skill memory layer.
+"""``claudecode-memanto`` CLI — manual control over the skill memory layer.
 
 The lifecycle hooks make memory automatic; this CLI is the manual escape hatch
 (and what the /memanto-companion skill shells out to):
 
-    memanto-skills recall <skill> [--hint TEXT]   # print injectable context
-    memanto-skills store  <skill> "summary..."    # distill + persist
-    memanto-skills profile                         # show accumulated profile
-    memanto-skills install [--global]              # register lifecycle hooks
-    memanto-skills doctor                          # check config + connectivity
+    claudecode-memanto recall <skill> [--hint TEXT]   # print injectable context
+    claudecode-memanto store  <skill> "summary..."    # distill + persist
+    claudecode-memanto profile                         # show accumulated profile
+    claudecode-memanto install [--global]              # register lifecycle hooks
+    claudecode-memanto doctor                          # check config + connectivity
 
 Uses only the standard library (argparse) to stay dependency-light.
 """
@@ -23,14 +23,14 @@ from .skill_map import known_skills
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Dispatch the ``memanto-skills`` CLI.
+    """Dispatch the ``claudecode-memanto`` CLI.
 
     Parses ``argv`` (defaulting to ``sys.argv``), runs the matching subcommand,
     and returns its exit code. Network/API failures are surfaced as a single
     clean error line, not a traceback.
     """
     parser = argparse.ArgumentParser(
-        prog="memanto-skills",
+        prog="claudecode-memanto",
         description="Cross-session engineering memory for Claude Code skills.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
@@ -46,7 +46,15 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("profile", help="Show the accumulated engineering profile.")
     sub.add_parser("doctor", help="Check configuration and connectivity.")
 
-    p_install = sub.add_parser("install", help="Register Claude Code lifecycle hooks.")
+    p_install = sub.add_parser(
+        "install", help="Install the Memanto integration (hooks or prompt)."
+    )
+    p_install.add_argument(
+        "--method",
+        choices=["hooks", "prompt"],
+        default="hooks",
+        help="Installation method to use.",
+    )
     p_install.add_argument(
         "--global",
         dest="global_scope",
@@ -65,6 +73,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.command == "install":
+        if args.method == "prompt":
+            from .installer import install_prompt
+
+            return install_prompt(global_scope=args.global_scope)
+
         from .installer import install_hooks
 
         return install_hooks(global_scope=args.global_scope)

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from memanto_skills.profile import MemoryProfile
+from claudecode_memanto.profile import MemoryProfile
 
 
 class TestFromRecall:

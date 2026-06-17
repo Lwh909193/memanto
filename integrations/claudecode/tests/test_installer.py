@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
-from memanto_skills import installer
+from claudecode_memanto import installer
 
 _EVENTS = ("SessionStart", "UserPromptExpansion", "Stop")
 
@@ -19,11 +20,12 @@ def settings_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     return tmp_path / ".claude" / "settings.json"
 
 
-def _load(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
+def _load(path: Path) -> dict[str, Any]:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return data if isinstance(data, dict) else {}
 
 
-def _managed_count(settings: dict) -> int:
+def _managed_count(settings: dict[str, Any]) -> int:
     return sum(
         1
         for entries in settings.get("hooks", {}).values()

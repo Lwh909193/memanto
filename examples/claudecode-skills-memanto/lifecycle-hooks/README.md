@@ -20,11 +20,11 @@ Memory is wired into the **Claude Code hook lifecycle**, not bolted onto forked
 skills. The hooks fire on the *real, unmodified* mattpocock skills — nothing to
 remember to invoke, nothing to copy-paste.
 
-![How it works](./assets/how-it-works-three-real-lifecycle-hooks.png)
+![How it works](https://raw.githubusercontent.com/moorcheh-ai/memanto/main/examples/claudecode-skills-memanto/lifecycle-hooks/assets/how-it-works-three-real-lifecycle-hooks.png)
 
 ### Component architecture
 
-![Component architecture](./assets/component-architecture.png)
+![Component architecture](https://raw.githubusercontent.com/moorcheh-ai/memanto/main/examples/claudecode-skills-memanto/lifecycle-hooks/assets/component-architecture.png)
 
 ### Mapping to the bounty's implementation guidelines
 
