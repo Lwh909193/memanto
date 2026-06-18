@@ -74,7 +74,8 @@ class MemoryProfile:
         either ``score`` or ``similarity_score`` depending on the endpoint, so
         we coalesce both.
         """
-        memories = list((result or {}).get("memories", []) or [])
+        raw_memories = (result or {}).get("memories", []) or []
+        memories = [m for m in raw_memories if isinstance(m, dict)]
         if min_similarity is not None:
             memories = [m for m in memories if _score(m) >= min_similarity]
         return cls(memories=memories)
@@ -90,7 +91,9 @@ class MemoryProfile:
 
         grouped: dict[str, list[dict[str, Any]]] = {}
         for mem in self.memories:
-            grouped.setdefault((mem.get("type") or "context").lower(), []).append(mem)
+            mtype = mem.get("type")
+            key = mtype.lower() if isinstance(mtype, str) and mtype else "context"
+            grouped.setdefault(key, []).append(mem)
 
         # Escape skill_name everywhere it appears in the injected block. The
         # block is fed back into the model as system context, so a crafted

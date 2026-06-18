@@ -125,7 +125,7 @@ def heuristic_memories(summary: str) -> list[dict[str, Any]]:
             {
                 "type": mtype,
                 "title": s[:80],
-                "content": s,
+                "content": s[: InputLimits.MAX_TEXT_LENGTH],
                 "confidence": 0.6,
             }
         )

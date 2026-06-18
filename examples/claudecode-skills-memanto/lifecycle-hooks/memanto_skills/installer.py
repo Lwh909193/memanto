@@ -86,9 +86,11 @@ def _load(path: Path) -> dict[str, Any]:
         return {}
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
-        return data if isinstance(data, dict) else {}
-    except json.JSONDecodeError:
-        return {}
+        if not isinstance(data, dict):
+            raise ValueError(f"{path} must contain a top-level JSON object.")
+        return data
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid JSON in {path}; refusing to modify it.") from exc
 
 
 def _backup(path: Path) -> Path | None:
@@ -138,7 +140,11 @@ def install_hooks(global_scope: bool = False) -> int:
     path = _settings_path(global_scope)
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    settings = _load(path)
+    try:
+        settings = _load(path)
+    except ValueError as exc:
+        print(str(exc))
+        return 1
     backup = _backup(path)
 
     # If "hooks" is missing or malformed (list/string from a hand-edited file),
@@ -178,7 +184,11 @@ def uninstall_hooks(global_scope: bool = False) -> int:
         print(f"Nothing to uninstall ({path} does not exist).")
         return 0
 
-    settings = _load(path)
+    try:
+        settings = _load(path)
+    except ValueError as exc:
+        print(str(exc))
+        return 1
     hooks_section = settings.get("hooks")
     if not isinstance(hooks_section, dict):
         # Nothing of ours could possibly be here if the shape is wrong.

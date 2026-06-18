@@ -194,7 +194,9 @@ def _read_transcript_full(
                 skill = found
         pieces.append(f"{role}: {text}" if role else text)
 
-    rendered = "\n".join(pieces[-max_messages:])
+    rendered = "" if max_messages <= 0 else "\n".join(pieces[-max_messages:])
+    if max_chars <= 0:
+        return skill, ""
     return skill, rendered[-max_chars:]
 
 

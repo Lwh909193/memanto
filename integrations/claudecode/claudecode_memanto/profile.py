@@ -135,9 +135,9 @@ def _score(mem: dict[str, Any]) -> float:
     if raw is None:
         raw = mem.get("similarity_score")
     try:
-        return float(raw) if raw is not None else 1.0
+        return float(raw) if raw is not None else 0.0
     except (TypeError, ValueError):
-        return 1.0
+        return 0.0
 
 
 def _skill_attr(skill_name: str | None) -> str:

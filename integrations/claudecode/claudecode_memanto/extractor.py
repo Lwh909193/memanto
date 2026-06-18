@@ -57,7 +57,7 @@ EXTRACTION_FOOTER = (
 
 def build_extraction_question(skill_name: str | None, summary: str) -> str:
     """Compose the question handed to the backend LLM."""
-    summary = (summary or "").strip()[:_MAX_SUMMARY_CHARS]
+    summary = (summary or "").strip()[-_MAX_SUMMARY_CHARS:]
     skill_line = f"The session used the /{skill_name} skill.\n" if skill_name else ""
     return (
         f"{skill_line}"
