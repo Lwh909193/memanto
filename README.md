@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://www.memanto.ai/">
-    <img alt="MEMANTO Logo" src="https://github.com/moorcheh-ai/memanto/raw/main/assets/memanto-dark.svg" width="500">
+    <img alt="MEMANTO Logo" src="https://github.com/moorcheh-ai/memanto/raw/main/assets/memanto.svg" width="500">
     </a>
 </p>
 
@@ -9,7 +9,7 @@
 </div>
 
 <p align="center">
-  Persistent memory for Claude Code, Cursor, Codex, and 14 other agents. 100% free, open source, and runs entirely on your machine - no API keys, no vector database, no backend to babysit.
+  Persistent memory for Claude Code, Cursor, Codex, and 14+ other agents, built on the world's first information-theoretic search engine. 100% free, open source, and runs entirely on your machine - no API keys, no vector database, no backend to babysit.
 </p>
 
 <h1 align="center">
