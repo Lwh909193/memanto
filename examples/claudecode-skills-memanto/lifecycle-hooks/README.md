@@ -110,7 +110,7 @@ Decisions made:
 
 ## Manual control — the `memanto-skills` CLI
 
-The hooks are automatic; the CLI (and the `/memanto-companion` skill) is the
+The hooks are automatic; the CLI (and the `/memanto-skills:memanto-companion` skill) is the
 manual surface.
 
 ```bash

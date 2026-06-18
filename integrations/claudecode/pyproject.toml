@@ -60,7 +60,7 @@ Repository = "https://github.com/moorcheh-ai/memanto"
 "Bug Tracker" = "https://github.com/moorcheh-ai/memanto/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["claudecode_memanto"]
+packages = ["claudecode_memanto", "hooks"]
 
 [tool.ruff]
 target-version = "py310"
