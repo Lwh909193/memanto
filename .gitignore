@@ -1,106 +1,131 @@
-# Environment variables and secrets
-.env
-.env.local
-.env.*.local
-*.key
-*.pem
-*.crt
-secrets/
-.secrets
+# OpenClaw workspace .gitignore
+# Generated 2026-06-29
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.Python
-uv.lock
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+dist/
+build/
+.eggs/
+*.whl
 
-# Virtual environments
-venv/
+# Environment
+.env
+.env.*
 .venv/
-ENV/
+venv/
 env/
-.env/
 
-# IDEs
-.vscode/
+# Node
+node_modules/
+npm-debug.log*
+
+# IDE
 .idea/
-.claude/
+.vscode/
 *.swp
 *.swo
 *~
-.DS_Store
-
-# Testing
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-.pytest_cache/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Logs
-logs/
-*.log
-pip-log.txt
-pip-delete-this-directory.txt
 
 # OS
-.DS_Store
 Thumbs.db
-Desktop.ini
+.DS_Store
 
-# Temporary files
-tmp/
-temp/
-*.tmp
-*.bak
-*.swp
-*.swo
+# OpenClaw system files
+.openclaw/
+.uumit-tmp/
+.trash/
+.graph_cache/
+memory/locks/
+memory/metrics/
+memory/agent-evolution/
+memory/file-scan-cache.json
+temp_dumps/
+temp_uumit/
+temp_payload.json
+temp_*.json
 
-# Generated version file
-**/_version.py
+# Generated/scratch files
+_*.py
+_*.ps1
+_*.js
+_*.html
+_*.png
+_*.json
+_*.txt
+tmp_*
+test_*.png
+test_*.wav
+test_out*.png
+backtest_results.csv
+dashboard.html
+nv_payload.json
+query
+start
+stop
+health_check.py
+check_config.py
+auto_deploy.py
+simple_deploy.py
+notes_organization.py
+scan_knowledge.py
+full_gap_analysis*.py
+fusion_evolution_report.py
+fusion_evolution_v3.py
+fusion_v4_report.py
+github_release_prep.py
+knowledge_gap_analysis.py
+knowledge-graph.*
+optimization_*.py
+verify_enhanced_modules.py
+self_media_bot.py
+test_nvidia.py
+cruise_apply_results.json
+apply_cruise.py
+apply_cruise_tasks.*
+check_*.py
+clean_*.py
+debug_*.py
+fix_*.py
+print_*.py
+tmp_cruise_test.js
+tmp_test*
+sys_check.*
+
+# Downloaded wheels
+*.whl
+
+# Research/output
+research/
+output/
+outputs/
+video-plan/
+ai-money-blog/
+articles/
+images/
+archive/
+backups/
+data/
+
+# Project-specific
+memanto_repo/
+memanto_src/
+memanto_tmp/
+memanto_push/
+download_repo.py
+
+# Docs artifacts
+docs/*.html
+docs/*.py
+docs/*.md
+docs/*.txt
+!docs/README.md
+
+# Tests
+tests/
+
+# Skills (tracked separately)
+skills/
