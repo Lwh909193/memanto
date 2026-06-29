@@ -44,7 +44,7 @@ This benchmark suite pits **Memanto** (powered by Moorcheh's serverless retrieva
 ```bash
 # Clone this repo
 git clone https://github.com/moorcheh-ai/memanto.git
-cd memanto/examples/benchmarks/memanto_vs_mem0
+cd memanto/projects/memanto-benchmark/benchmarks/memanto_vs_mem0
 
 # Install dependencies
 pip install -r requirements.txt
@@ -71,6 +71,13 @@ OPENAI_BASE_URL=https://api.openai.com/v1
 
 # Optional: LLM-as-Judge for accuracy evaluation
 JUDGE_MODEL=gpt-4o-mini
+
+# Optional: Qdrant connection (defaults to localhost:6333)
+QDRANT_HOST=localhost
+QDRANT_PORT=6333
+QDRANT_URL=
+QDRANT_API_KEY=
+QDRANT_PATH=
 ```
 
 ## Output
